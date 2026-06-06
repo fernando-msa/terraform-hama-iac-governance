@@ -1,0 +1,54 @@
+# ==============================================================================
+# .gitignore — terraform-hama-iac-governance
+# Arquivos que NUNCA devem ser versionados (segurança e boas práticas Terraform)
+# ==============================================================================
+
+# Arquivos de estado do Terraform (contêm dados sensíveis em texto puro!)
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+
+# Variáveis com valores reais (senhas, chaves, dados do hospital)
+terraform.tfvars
+*.tfvars
+!terraform.tfvars.example  # Exceção: o exemplo SEM dados reais deve ser versionado
+
+# Diretório de módulos e providers baixados
+.terraform/
+.terraform.lock.hcl
+
+# Planos de execução (podem conter dados sensíveis)
+tfplan
+*.tfplan
+*.plan
+
+# Arquivos gerados automaticamente
+crash.log
+crash.*.log
+
+# Arquivo ZIP da Lambda (gerado pelo provider archive)
+modules/monitoring/lambda-wifi-check/*.zip
+
+# Variáveis de ambiente com credenciais
+.env
+.env.local
+*.env
+
+# Chaves SSH e certificados
+*.pem
+*.key
+*.crt
+*.p12
+
+# IDEs e editores
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Logs locais de teste
+*.log
+logs/*.json
+!logs/cloudtrail-logs.tf  # Exceção: o arquivo Terraform deve ser versionado

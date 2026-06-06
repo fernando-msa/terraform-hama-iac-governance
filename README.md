@@ -1,7 +1,7 @@
 # 🏥 terraform-hama-iac-governance
 
 > **Infraestrutura como Código para Governança de TI Hospitalar**  
-> Implementação em Terraform dos controles de segurança, backup e monitoramento documentados nos POPs, Diretrizes e Checklists do HAMA (Hospital Dr. Mozart Cirne Lima / IGH — Aracaju/SE), com aderência às normas **ISO/IEC 27001** e **LGPD**.
+> Implementação em Terraform dos controles de segurança, backup e monitoramento documentados nos POPs, Diretrizes e Checklists do HAMA (Hospital da Mulher e Maternidade de Aracaju Lourdes Nogueira / IGH — Aracaju/SE), com aderência às normas **ISO/IEC 27001** e **LGPD**.
 
 [![Terraform](https://img.shields.io/badge/Terraform-v1.5+-7B42BC?logo=terraform)](https://terraform.io)
 [![AWS](https://img.shields.io/badge/AWS-Free_Tier-FF9900?logo=amazonaws)](https://aws.amazon.com/free)

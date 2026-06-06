@@ -1,0 +1,41 @@
+# ==============================================================================
+# terraform.tfvars.example
+# Copie este arquivo para terraform.tfvars e preencha com seus valores reais.
+# NUNCA versione o arquivo terraform.tfvars com dados reais no git!
+# Adicione terraform.tfvars ao .gitignore.
+# ==============================================================================
+
+# ------------------------------------------------------------
+# AMBIENTE
+# ------------------------------------------------------------
+aws_region   = "us-east-1"
+environment  = "producao"
+project_name = "hama-iac-governance"
+
+# ------------------------------------------------------------
+# TAGS OBRIGATÓRIAS — DIR.MMLN.TI.001
+# Preencha conforme o inventário de ativos do HAMA.
+# ------------------------------------------------------------
+tag_setor          = "TI"
+tag_data_aquisicao = "2025-01-01"
+tag_data_fim_vida  = "2033-01-01" # 8 anos após aquisição — conforme diretriz
+tag_responsavel    = "ti-hama@igh.org.br"
+tag_custo_centro   = "TI-HAMA"
+
+# ------------------------------------------------------------
+# BACKUP — POP.HAMA.TI.004
+# ------------------------------------------------------------
+backup_retention_days        = 30  # Objetos expiram após 30 dias
+backup_version_retention_days = 90  # Versões anteriores expiram após 90 dias
+
+# ------------------------------------------------------------
+# MONITORAMENTO E SLA — POP.HAMA.TI.005
+# ------------------------------------------------------------
+sla_threshold_minutes = 240   # 4 horas = SLA nível P2
+alert_email           = "ti-hama@igh.org.br"  # Receberá alertas de violação de SLA
+
+# ------------------------------------------------------------
+# CONTROLE DE ACESSO — FORM.HAMA.TI.015
+# ------------------------------------------------------------
+tecnico_rack_allowed_ips = ["10.0.0.0/8"]  # Rede interna do hospital
+cloudtrail_retention_days = 365              # 1 ano de retenção de logs de auditoria

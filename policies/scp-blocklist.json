@@ -1,0 +1,151 @@
+{
+  "_comentario_": {
+    "descricao": "Service Control Policy (SCP) para AWS Organizations",
+    "controle": "DIR.MMLN.TI.002 — Diretriz de Restrições de Uso de Recursos AWS",
+    "norma": "ISO 27001 A.8.1.1 / A.9.4.1",
+    "aplicacao": "Esta SCP deve ser aplicada na OU (Organizational Unit) da conta HAMA via AWS Organizations. Ela funciona como um 'teto' de permissões: mesmo que um usuário tenha Allow em sua IAM policy, a SCP pode negar a ação.",
+    "simulacao": "Como esta conta não está em AWS Organizations, esta policy é mantida como documentação e referência. A IAM Policy equivalente está em policies/iam-policies.tf (recurso: aws_iam_policy.deny_without_required_tags).",
+    "como_aplicar_producao": [
+      "1. Criar AWS Organizations na conta raiz",
+      "2. Criar OU para a conta HAMA",
+      "3. Acessar AWS Organizations > Policies > Service Control Policies",
+      "4. Criar nova SCP com o conteúdo da 'policy' abaixo",
+      "5. Anexar a SCP à OU da conta HAMA"
+    ]
+  },
+  "policy": {
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Sid": "DenyEC2WithoutRequiredTags",
+        "Effect": "Deny",
+        "Action": [
+          "ec2:RunInstances",
+          "ec2:CreateVolume",
+          "ec2:CreateSnapshot",
+          "ec2:CreateImage"
+        ],
+        "Resource": "*",
+        "Condition": {
+          "Null": {
+            "aws:RequestTag/Setor": "true"
+          }
+        }
+      },
+      {
+        "Sid": "DenyEC2WithoutResponsavel",
+        "Effect": "Deny",
+        "Action": ["ec2:RunInstances"],
+        "Resource": "*",
+        "Condition": {
+          "Null": {
+            "aws:RequestTag/Responsavel": "true"
+          }
+        }
+      },
+      {
+        "Sid": "DenyEC2WithoutCustoCentro",
+        "Effect": "Deny",
+        "Action": ["ec2:RunInstances"],
+        "Resource": "*",
+        "Condition": {
+          "Null": {
+            "aws:RequestTag/CustoCentro": "true"
+          }
+        }
+      },
+      {
+        "Sid": "DenyS3WithoutRequiredTags",
+        "Effect": "Deny",
+        "Action": ["s3:CreateBucket"],
+        "Resource": "*",
+        "Condition": {
+          "Null": {
+            "aws:RequestTag/Setor": "true"
+          }
+        }
+      },
+      {
+        "Sid": "DenyRDSWithoutRequiredTags",
+        "Effect": "Deny",
+        "Action": [
+          "rds:CreateDBInstance",
+          "rds:CreateDBCluster",
+          "rds:RestoreDBInstanceFromDBSnapshot"
+        ],
+        "Resource": "*",
+        "Condition": {
+          "Null": {
+            "aws:RequestTag/Setor": "true"
+          }
+        }
+      },
+      {
+        "Sid": "DenyLambdaWithoutResponsavel",
+        "Effect": "Deny",
+        "Action": [
+          "lambda:CreateFunction"
+        ],
+        "Resource": "*",
+        "Condition": {
+          "Null": {
+            "aws:RequestTag/Responsavel": "true"
+          }
+        }
+      },
+      {
+        "Sid": "DenyDisablingCloudTrail",
+        "Effect": "Deny",
+        "Action": [
+          "cloudtrail:DeleteTrail",
+          "cloudtrail:StopLogging",
+          "cloudtrail:UpdateTrail"
+        ],
+        "Resource": "*",
+        "_comentario_": "Garante que o CloudTrail de auditoria nunca seja desativado — ISO 27001 A.12.4.1"
+      },
+      {
+        "Sid": "DenyDeleteBillingData",
+        "Effect": "Deny",
+        "Action": [
+          "aws-portal:ModifyBilling",
+          "aws-portal:ModifyPaymentMethods"
+        ],
+        "Resource": "*",
+        "_comentario_": "Protege dados financeiros — somente a conta raiz pode modificar configurações de cobrança"
+      },
+      {
+        "Sid": "DenyLeaveOrganization",
+        "Effect": "Deny",
+        "Action": [
+          "organizations:LeaveOrganization"
+        ],
+        "Resource": "*",
+        "_comentario_": "Impede que a conta saia da organização, mantendo os controles de SCP ativos"
+      },
+      {
+        "Sid": "DenyRegionsOutsideSAEast",
+        "Effect": "Deny",
+        "NotAction": [
+          "iam:*",
+          "sts:*",
+          "route53:*",
+          "cloudfront:*",
+          "waf:*",
+          "support:*",
+          "trustedadvisor:*"
+        ],
+        "Resource": "*",
+        "Condition": {
+          "StringNotEquals": {
+            "aws:RequestedRegion": [
+              "us-east-1",
+              "sa-east-1"
+            ]
+          }
+        },
+        "_comentario_": "Restringe provisionamento a us-east-1 e sa-east-1 (São Paulo) — conformidade com LGPD (dados em território nacional)"
+      }
+    ]
+  }
+}
